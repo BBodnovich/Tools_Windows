@@ -1,6 +1,11 @@
 # Use Case
 # Changes a user's name after a name update, OU change, or similar
 
+# NOTE
+# This script was trimmed down to only include 5 Organizatoinal Units
+# The environment ran in had nearly 40 Organizational Units
+# I trimmed the script down to make it easier to parse and see the fundamentals
+
 
 # Script Functions
 function Get-UserOrg {
@@ -19,40 +24,6 @@ function Get-UserOrg {
 
 # Organization Unit Hash Table
 $orgNames = @{
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
-    "OU_ID" = "REDACTED_DISPLAY_NAME"
     "OU_ID" = "REDACTED_DISPLAY_NAME"
     "OU_ID" = "REDACTED_DISPLAY_NAME"
     "OU_ID" = "REDACTED_DISPLAY_NAME"

@@ -2,6 +2,11 @@
 # Searches for users who have not logged in within XX amount of days
 # Useful for getting rid of old, stale accounts that have not be used in 90+ days
 
+# NOTE
+# This script was trimmed down to only include 5 Organizatoinal Units
+# The environment ran in had nearly 40 Organizational Units
+# I trimmed the script down to make it easier to parse and see the fundamentals
+
 
 # User-Defined Variables for Time Period and Report Path
 $CurrentDate = Get-Date
