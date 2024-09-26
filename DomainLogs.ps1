@@ -2,10 +2,10 @@
 # Pull logs for Microsoft / Absolute
 # Places the logs onto your current desktop
 
-$userName = 'redacted_username'
+$userName = 'REDACTED_USERNAME'
 $remoteFilePath = '%windir%\debug\netlogon.log'
  
-$remoteServers = @('redacted_server1', 'redacted_server2', 'redacted_server3', 'redacted_server4', 'redacted_server5')
+$remoteServers = @('REDACTED_SERVER1', 'REDACTED_SERVER2', 'REDACTED_SERVER3', 'REDACTED_SERVER4', 'REDACTED_SERVER5')
  
 $remoteServers | ForEach-Object {
     $remoteComputer = $_
