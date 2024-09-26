@@ -41,17 +41,7 @@ return $randomString
 }
 
 
-# User Information Prompts
-$userTarget = Read-Host -Prompt "What is the target user ID?                  "
-$userFirstName = Read-Host -Prompt "What is the user's first name?               "
-$userInitialM = Read-Host -Prompt "What is the user's middle initial?           "
-$userLastName = Read-Host -Prompt "What is the user's last name?                "
-$userInitialF = $userFirstName.Substring(0, [Math]::Min($userFirstName.Length, 1))
-$userInitialL = $userLastName.Substring(0, [Math]::Min($userLastName.Length, 1))
-$userFullName = "$userLastName, $userFirstName $userInitialM."
-
-
-# Organizational Unit Data Variables
+# Organization Unit Hash Table - ID / Name Map
 $orgNames = @{
     "REDACTED_ORG_ID" = "REDACTED_DISPLAY_NAME"
     "REDACTED_ORG_ID" = "REDACTED_DISPLAY_NAME"
@@ -61,40 +51,40 @@ $orgNames = @{
 }
 
 
-# Set user Organization Unit Details
-$orgDetails = @{
+# Organizational Unit Hash Table - Data
+$orgData = @{
     "REDACTED_ORG_ID" = @{
-        $userOrgName = "REDACTED_ORG_NAME"
-        $userLogonScript = "REDACTED_SCRIPT.bat"
-        $userOrgGID = "a15275b5-394e-4f95-a2ef-09e9daab1568"    # REDACTED_DISTINGUISHED_NAME
-        $userGroupsAD = @(
+        Name = "REDACTED_ORG_NAME"
+        LogonScript = "REDACTED_SCRIPT.bat"
+        OrgUnitGID = "a15275b5-394e-4f95-a2ef-09e9daab1568"     # REDACTED_DISTINGUISHED_NAME
+        GroupsAD = @(
             'S-1-0-00-0000000000-000000000-000000000-00000'     # Security      REDACTED_GROUP_NAME
         )
     }
     "REDACTED_ORG_ID" = @{
-        $userOrgName = "REDACTED_ORG_NAME"
-        $userLogonScript = "REDACTED_SCRIPT.bat"
-        $userOrgGID = "REDACTED_ORG_GID"                        # REDACTED_DISTINGUISHED_NAME
-        $userGroupsAD = @(
+        Name = "REDACTED_ORG_NAME"
+        LogonScript = "REDACTED_SCRIPT.bat"
+        OrgUnitGID = "REDACTED_ORG_GID"                         # REDACTED_DISTINGUISHED_NAME
+        GroupsAD = @(
             'S-1-0-00-0000000000-000000000-000000000-00000',    # Security      REDACTED_GROUP_NAME
             'S-1-0-00-0000000000-000000000-000000000-0000',     # Security      REDACTED_GROUP_NAME
             'S-1-0-00-0000000000-000000000-000000000-0000'      # Distribution  REDACTED_GROUP_NAME
         )
     }
     "REDACTED_ORG_ID" = @{
-        $userOrgName = "REDACTED_ORG_NAME"
-        $userLogonScript = "REDACTED_SCRIPT.bat"
-        $userOrgGID = "REDACTED_ORG_GID"                        # REDACTED_DISTINGUISHED_NAME
-        $userGroupsAD = @(
+        Name = "REDACTED_ORG_NAME"
+        LogonScript = "REDACTED_SCRIPT.bat"
+        OrgUnitGID = "REDACTED_ORG_GID"                         # REDACTED_DISTINGUISHED_NAME
+        GroupsAD = @(
             'S-1-0-00-0000000000-000000000-000000000-0000',     # Security      REDACTED_GROUP_NAME
             'S-1-0-00-0000000000-000000000-000000000-0000'      # Distribution  REDACTED_GROUP_NAME
         )
     }
     "REDACTED_ORG_ID" = @{
-        $userOrgName = "REDACTED_ORG_NAME"
-        $userLogonScript = "REDACTED_SCRIPT.bat"
-        $userOrgGID = "REDACTED_ORG_GID"                        # REDACTED_DISTINGUISHED_NAME
-        $userGroupsAD = @(
+        Name = "REDACTED_ORG_NAME"
+        LogonScript = "REDACTED_SCRIPT.bat"
+        OrgUnitGID = "REDACTED_ORG_GID"                         # REDACTED_DISTINGUISHED_NAME
+        GroupsAD = @(
             'S-1-0-00-0000000000-000000000-000000000-00000',    # Security      REDACTED_GROUP_NAME
             'S-1-0-00-0000000000-000000000-000000000-00000',    # Security	    REDACTED_GROUP_NAME
             'S-1-0-00-0000000000-000000000-000000000-0000',     # Security	    REDACTED_GROUP_NAME
@@ -102,10 +92,10 @@ $orgDetails = @{
         )
     }
     "REDACTED_ORG_ID" = @{
-        $userOrgName = "REDACTED_ORG_NAME"
-        $userLogonScript = "REDACTED_SCRIPT.bat"
-        $userOrgGID = "REDACTED_ORG_GID"                        # REDACTED_DISTINGUISHED_NAME
-        $userGroupsAD = @(
+        Name = "REDACTED_ORG_NAME"
+        LogonScript = "REDACTED_SCRIPT.bat"
+        OrgUnitGID = "REDACTED_ORG_GID"                         # REDACTED_DISTINGUISHED_NAME
+        GroupsAD = @(
             'S-1-0-00-0000000000-000000000-000000000-00000',    # Security      REDACTED_GROUP_NAME
             'S-1-0-00-0000000000-000000000-000000000-0000',     # Security	    REDACTED_GROUP_NAME
             'S-1-0-00-0000000000-000000000-000000000-0000'      # Distribution	REDACTED_GROUP_NAME
@@ -114,36 +104,44 @@ $orgDetails = @{
 }
 
 
-function New-RedactedUser {
+# Script Main Body Function
+function New-RedactedUser{
     $userOrg = Get-UserOrg
-    
-    if ($orgDetails.ContainsKey($userOrg)) {
-        $org = $orgDetails[$userOrg]
-        $userOrgName = $org.OrgName
-        $userLogonScript = $org.LogonScript
-        $userOrgGID = $org.OrgUnitGID
-        $userGroupsAD = $org.GroupsAD
+
+    if ($orgNames.ContainsKey($userOrg)) {
+        $userOrgName = $orgNames[$userOrg]
+    } else {
+        Write-Output "You did not input a correct entry."
+        exit 1
+    }
+
+    if ($orgData.ContainsKey($userOrg)) {
+        $userOrgName = $orgData[$userOrg].Name
+        $userLogonScript = $orgData[$userOrg].LogonScript
+        $userOrgUnitGID = $orgData[$userOrg].OrgUnitGID
+        $userGroupsAD = $orgData[$userOrg].GroupsAD
     } else {
         Write-Output "You did not input a correct entry."
         exit 1
     }
 
 
-    # User Informatoin Variables
+    # User Information Variables
     $userFirstName = Read-Host -Prompt "What is the user's first name?               "
     $userInitialM = Read-Host -Prompt "What is the user's middle initial?           "
     $userLastName = Read-Host -Prompt "What is the user's last name?                "
+
     $userInitialF = $userFirstName.Substring(0, [Math]::Min($userFirstName.Length, 1))
     $userInitialL = $userLastName.Substring(0, [Math]::Min($userLastName.Length, 1))
     $userFullName = "$userLastName, $userFirstName $userInitialM."
     $userEmailname = "$userInitialF$userInitialM$userLastName"
 
     $userID = $userOrg.ToUpper() + $userInitialF.ToUpper() + $userInitialM.ToUpper() + $userInitialL.ToUpper()
-    $userEmailID = "$userID@hanover.gov"
+    $userEmailID = "$userID@REDACTED_DOMAIN.gov"
 
-    $userEmailSMTP = "$userEmailname@hanovercounty.gov"
-    $userEmailExternal = "$userEmailname@hanoverva.mail.onmicrosoft.com"
-    $userEmailTertiary = "$userEmailname@co.hanover.va.us"
+    $userEmailSMTP = "$userEmailname@REDACTED_DOMAIN_2.gov"
+    $userEmailExternal = "$userEmailname@REDACTED_DOMAIN_3.com"
+    $userEmailTertiary = "$userEmailname@REDACTED_DOMAIN_4.us"
 
     $userJobTitle = Read-host -Prompt "What is the user's job title?                "
     $userManager = Read-Host -Prompt "Who is the user's manager?                   "
@@ -153,14 +151,18 @@ function New-RedactedUser {
 
 
     # User ID Validation
-    $adSession = New-PSSession ADSRVFSMO
+    $adSession = New-PSSession REDACTED_DOMAIN_SERVER
     Invoke-Command -Session $adSession -Scriptblock {Import-Module ActiveDirectory}
 
-    function adValidation {Invoke-Command -Session $adSession -Scriptblock {(Get-ADUser $Using:userID).SamAccountName} 2> $null}
+    function adValidation {
+        Invoke-Command -Session $adSession -Scriptblock {
+            (Get-ADUser $Using:userID).SamAccountName
+        } 2> $null}
+
     $userIncrement = 2
     While (adValidation -eq "$userID"){
         $userID = $userOrg + $userInitialF + $userInitialM + $userInitialL + $userIncrement
-        $userEmailID = $userOrg + $userInitialF + $userInitialM + $userInitialL + $userIncrement + "@hanover.gov"
+        $userEmailID = $userOrg + $userInitialF + $userInitialM + $userInitialL + $userIncrement + "@REDACTED_DOMAIN.gov"
         $userIncrement++
     }
 
@@ -170,18 +172,23 @@ function New-RedactedUser {
     # User Email Validation
     Add-PSSnapin Microsoft.Exchange.Management.PowerShell.SnapIn
 
-    function emailSMTPValidation {((Get-User -Filter 'WindowsEmailAddress -like $userEmailSMTP').WindowsEmailAddress).Address}
+    function emailSMTPValidation {
+        ((Get-User -Filter 'WindowsEmailAddress -like $userEmailSMTP').WindowsEmailAddress).Address
+    }
+
     $userIncrement = 2
+
     While (emailSMTPValidation -eq "$userEmailSMTP"){
-        $userEmailSMTP = "$userEmailName$userIncrement@hanovercounty.gov"
-        $userEmailExternal = "$userEmailName$userIncrement@hanoverva.mail.onmicrosoft.com"
-        $userEmailTertiary = "$userEmailName$userIncrement@co.hanover.va.us"
+        $userEmailSMTP = "$userEmailName$userIncrement@REDACTED_DOMAIN_2.gov"
+        $userEmailExternal = "$userEmailName$userIncrement@REDACTED_DOMAIN_3.com"
+        $userEmailTertiary = "$userEmailName$userIncrement@REDACTED_DOMAIN_4.us"
         $userIncrement++
     }
 
 
     # Exchange Account Creation
     Add-PSSnapin Microsoft.Exchange.Management.PowerShell.SnapIn
+
     New-RemoteMailbox -Alias $userID `
     -FirstName $userFirstName `
     -Initials $userInitialM `
@@ -194,7 +201,9 @@ function New-RedactedUser {
     -RemoteRoutingAddress $userEmailExternal `
     -Password (ConvertTo-SecureString -String $userPassword -AsPlainText -Force) `
     -ResetPasswordOnNextLogo $true | Out-Null
+
     Start-Sleep -Seconds 5
+
     Set-RemoteMailbox $userEmailID -EmailAddresses @{Add=$userEmailTertiary}
 
     Write-Output "`nUser Account Created: "
@@ -203,29 +212,48 @@ function New-RedactedUser {
 
 
     # Synchronize Active Directory
-    $adUpdateSession = New-PSSession -ComputerName INFRAAPP
+    $adUpdateSession = New-PSSession -ComputerName REDACTED_MANAGEMENT_SERVER
+
     Invoke-Command $adUpdateSession -ScriptBlock {
         Import-Module ADSync
         Start-ADSyncSyncCycle Delta | Out-Null
     }
+
     Remove-PSSession $adUpdateSession
 
 
     # Set Active Directory Settings
-    $adSession = New-PSSession ADSRVFSMO
+    $adSession = New-PSSession REDACTED_DOMAIN_SERVER
     Invoke-Command -Session $adSession -Scriptblock { 
         Import-Module ActiveDirectory
+
         $userManager = $Using:userManager
         $userManagerQuery = Get-ADUser -Filter 'Name -like $userManager'
         $userDescription = "$Using:userFirstName $Using:userLastName in $Using:userOrgName"
-        (Get-ADDomainController -Filter *).Name | Foreach-Object { repadmin /syncall $_ (Get-ADDomain).DistinguishedName /AdeP } | out-null
-        Get-ADUser $Using:userID | Move-ADObject -TargetPath $Using:userOrgUnitGID
-        Get-ADuser $Using:userID | Set-ADUser -Description $userDescription -Office $Using:userOffice -Manager $userManagerQuery -ScriptPath $Using:userLogonScript -Title $Using:userJobTitle -Department $Using:userOrgName -Company "Hanover County"
+
+        (Get-ADDomainController -Filter *).Name | 
+            ForEach-Object { 
+                repadmin /syncall $_ (Get-ADDomain).DistinguishedName /AdeP 
+            } | Out-Null
+
+        Get-ADUser $Using:userID | 
+            Move-ADObject -TargetPath $Using:userOrgUnitGID
+
+        Get-ADUser $Using:userID | 
+            Set-ADUser -Description $userDescription `
+                    -Office $Using:userOffice `
+                    -Manager $userManagerQuery `
+                    -ScriptPath $Using:userLogonScript `
+                    -Title $Using:userJobTitle `
+                    -Department $Using:userOrgName `
+                    -Company "REDACTED_NAME"
+
         foreach($userGroupAD in $Using:userGroupsAD){
             Add-ADGroupMember -Identity $userGroupAD -Members $Using:userID | Out-Null
         }
     } | Out-Null
+
     Remove-PSSession $adSession
 }
 
-New-HanoverUser
+New-RedactedUser
